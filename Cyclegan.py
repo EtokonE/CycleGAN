@@ -17,6 +17,7 @@ import datetime
 import matplotlib.pyplot as plt
 import sys
 from data_loader import DataLoader
+from reflection_pad import ReflectionPadding2D
 
 
 
@@ -146,7 +147,10 @@ class Gan():
                 g = Conv2D(out_features, kernel_size=3, strides=(2,2), padding='same', kernel_initializer=initializer)(input_layer)
             elif downsampling == False:
                 out_features = in_features//2
-                g = Conv2DTranspose(out_features, kernel_size=3, strides=(2,2), padding='same', kernel_initializer=initializer)(input_layer)
+                #g = Conv2DTranspose(out_features, kernel_size=3, strides=(2,2), padding='same', kernel_initializer=initializer)(input_layer)
+                g = UpSampling2D(size=2, interpolation='bilinear')(input_layer)
+                g = ReflectionPadding2D()(g)
+                g = Conv2D(out_features, kernel_size=3, strides=1, padding='valid', kernel_initializer=initializer)(g)
 
             
             g = InstanceNormalization(axis=-1)(g)
